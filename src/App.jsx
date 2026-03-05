@@ -17,7 +17,6 @@ export default function App() {
     return <Navigate to="/login" replace />;
   }
 
-  // Evite acessar window.* direto; use o hook para ser reativo/SSR-safe
   const location = useLocation();
   const isRegisterChildPage = location.pathname === '/register-child';
   if (children.length === 0 && !isRegisterChildPage) {
@@ -35,7 +34,6 @@ export default function App() {
       setFixing(true);
       setTimeout(() => setFixing(false), 0);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeBelongs]);
 
   if (fixing) return null;
@@ -43,12 +41,14 @@ export default function App() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-indigo-50 to-white text-slate-800">
       <Navbar />
-      {/* Coloque Suspense aqui se você usa lazy nas páginas */}
-      <Suspense fallback={<Loading text="Carregando..." />}>
+
+      {/* Suspense agora SEM loading — fallback vazio */}
+      <Suspense fallback={null}>
         <main className="max-w-6xl mx-auto px-4 py-6">
           <Outlet />
         </main>
       </Suspense>
+
       <footer className="text-center text-xs text-slate-500 py-6">
         Feito com finalidade educacional por{' '}
         <a
