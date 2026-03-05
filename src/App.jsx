@@ -3,7 +3,6 @@ import { useEffect, useMemo, useState, Suspense } from 'react';
 import { Outlet, Navigate, useLocation } from 'react-router-dom';
 import Navbar from './components/Navbar.jsx';
 import { loadGlobal, saveGlobal } from './lib/storage.js';
-import Loading from './components/Loading.jsx'; // se você já criou o loader
 
 export default function App() {
   const g = loadGlobal();
