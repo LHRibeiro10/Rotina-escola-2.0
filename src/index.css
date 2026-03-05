@@ -1,0 +1,18 @@
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root { color-scheme: light; }
+body { @apply bg-indigo-50 text-slate-800; }
+
+/* filename: src/index.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root { color-scheme: light; }
+body { @apply bg-white text-slate-800; }
+
+/* Opcional: suaviza fontes no Windows */
+html { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
