@@ -1,7 +1,9 @@
-import { useEffect, useMemo, useState } from 'react';
-import { Outlet, Navigate } from 'react-router-dom';
+// src/App.jsx
+import { useEffect, useMemo, useState, Suspense } from 'react';
+import { Outlet, Navigate, useLocation } from 'react-router-dom';
 import Navbar from './components/Navbar.jsx';
 import { loadGlobal, saveGlobal } from './lib/storage.js';
+import Loading from './components/Loading.jsx'; // se você já criou o loader
 
 export default function App() {
   const g = loadGlobal();
@@ -16,10 +18,12 @@ export default function App() {
     return <Navigate to="/login" replace />;
   }
 
- const isRegisterChildPage = window.location.pathname === "/register-child";
- if (children.length === 0 && !isRegisterChildPage) {
-  return <Navigate to="/register-child" replace />;
- }
+  // Evite acessar window.* direto; use o hook para ser reativo/SSR-safe
+  const location = useLocation();
+  const isRegisterChildPage = location.pathname === '/register-child';
+  if (children.length === 0 && !isRegisterChildPage) {
+    return <Navigate to="/register-child" replace />;
+  }
 
   const activeId = g.activeProfileId;
   const activeBelongs = children.some(c => c.id === activeId);
@@ -32,7 +36,7 @@ export default function App() {
       setFixing(true);
       setTimeout(() => setFixing(false), 0);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeBelongs]);
 
   if (fixing) return null;
@@ -40,16 +44,21 @@ export default function App() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-indigo-50 to-white text-slate-800">
       <Navbar />
-      <main className="max-w-6xl mx-auto px-4 py-6">
-        <Outlet />
-      </main>
+      {/* Coloque Suspense aqui se você usa lazy nas páginas */}
+      <Suspense fallback={<Loading text="Carregando..." />}>
+        <main className="max-w-6xl mx-auto px-4 py-6">
+          <Outlet />
+        </main>
+      </Suspense>
       <footer className="text-center text-xs text-slate-500 py-6">
-<<<<<<< HEAD
-        Feito com finalidade educacional por <a href="https://www.linkedin.com/in/luiz-henrique-ribeiro-978590309?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=ios_app" 
-          className="text-indigo-500 hover:underline">Luiz H. Ribeiro</a>. <br />
-=======
-        Feito com finalidade educacional por <a href="https://www.linkedin.com/in/luiz-henrique-ribeiro-978590309?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=ios_app" className="text-indigo-500 hover:underline">Luiz H. Ribeiro</a>. <br />
->>>>>>> 6fad635 (alteração Pontual)
+        Feito com finalidade educacional por{' '}
+        <a
+          href="https://www.linkedin.com/in/luiz-henrique-ribeiro-978590309?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=ios_app"
+          className="text-indigo-500 hover:underline"
+        >
+          Luiz H. Ribeiro
+        </a>.
+        <br />
       </footer>
     </div>
   );
